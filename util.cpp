@@ -37,7 +37,7 @@ ssize_t Readn(int fd, void *buff, size_t n)
 	return read_sum;
 }
 
-size_t Writen(int fd, void *buff, size_t n)
+ssize_t Writen(int fd, void *buff, size_t n)
 {
 	size_t nleft = n;
 	ssize_t nwritten = 0;
@@ -45,7 +45,7 @@ size_t Writen(int fd, void *buff, size_t n)
 	char* ptr = (char*)buff;
 	while (nleft > 0)
 	{
-		nwritten = write(fd, ptr, nleft));
+		nwritten = write(fd, ptr, nleft);
 		if (nwritten < 0)
 		{
 			if (errno == EINTR || errno == EAGAIN)
@@ -66,7 +66,7 @@ size_t Writen(int fd, void *buff, size_t n)
 	return write_sum;
 }
 
-void HandleforSigpipe()
+void HandleSigpipe()
 {
 	struct sigaction sa;
 	memset(&sa, '\0', sizeof(sa));
@@ -83,7 +83,7 @@ int SetSocketNonBlocking(int fd)
 		return -1;
 
 	int new_flag = old_flag | O_NONBLOCK;
-	if (fctl(fd, F_SETFL, flag) == -1)
+	if (fcntl(fd, F_SETFL, new_flag) == -1)
 		return -1;
 	return 0;
 }
